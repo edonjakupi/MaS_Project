@@ -322,6 +322,50 @@
 						</ParameterEditor>
 					</Properties>                 
 				</Variable>
+				<Variable Class="Parameter">
+					<Id>1484816089250</Id>
+					<Name><![CDATA[activePatHS]]></Name>
+					<X>600</X><Y>300</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[boolean]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<NumericType><![CDATA[double]]></NumericType>
+						<SdArray>false</SdArray>
+						<ParameterEditor>
+							<Id>1484816089248</Id>
+							<EditorContolType>CHECK_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
+				<Variable Class="Parameter">
+					<Id>1484816092160</Id>
+					<Name><![CDATA[activePatLoc]]></Name>
+					<X>600</X><Y>280</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[int]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<NumericType><![CDATA[double]]></NumericType>
+						<SdArray>false</SdArray>
+						<ParameterEditor>
+							<Id>1484816092158</Id>
+							<EditorContolType>TEXT_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
 			</Variables>
 			<Connectors>
 				<Connector>
@@ -624,7 +668,7 @@ doctorLocation = 1;]]></EntryAction>
 							<Code><![CDATA[1]]></Code>
 							<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
 						</Timeout>
-						<Condition><![CDATA[if((notUrgentQueue.size()+urgentQueue.size())!=0)]]></Condition>
+						<Condition><![CDATA[(notUrgentQueue.size()+urgentQueue.size())!=0]]></Condition>
 						<Rate Class="CodeUnitValue">
 							<Code><![CDATA[1]]></Code>
 							<Unit Class="RateUnits"><![CDATA[PER_SECOND]]></Unit>
@@ -715,7 +759,7 @@ doctorLocation = 1;]]></EntryAction>
 							<Code><![CDATA[1]]></Code>
 							<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
 						</Timeout>
-						<Condition><![CDATA[if((notUrgentQueue.size()+urgentQueue.size())!=0)]]></Condition>
+						<Condition><![CDATA[(notUrgentQueue.size()+urgentQueue.size())!=0]]></Condition>
 						<Rate Class="CodeUnitValue">
 							<Code><![CDATA[1]]></Code>
 							<Unit Class="RateUnits"><![CDATA[PER_SECOND]]></Unit>
@@ -745,7 +789,7 @@ doctorLocation = 1;]]></EntryAction>
 							<Code><![CDATA[1]]></Code>
 							<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
 						</Timeout>
-						<Condition><![CDATA[if((notUrgentQueue.size()+urgentQueue.size())==0)]]></Condition>
+						<Condition><![CDATA[(notUrgentQueue.size()+urgentQueue.size())==0]]></Condition>
 						<Rate Class="CodeUnitValue">
 							<Code><![CDATA[1]]></Code>
 							<Unit Class="RateUnits"><![CDATA[PER_SECOND]]></Unit>
@@ -1014,7 +1058,7 @@ return java.util.concurrent.ThreadLocalRandom.current().nextInt(minInterval,maxI
 				</Function>
 				<Function AccessType="default" StaticFunction="false">
 					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
-					<ReturnType><![CDATA[int]]></ReturnType>
+					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1484579769676</Id>
 					<Name><![CDATA[treatmentTime]]></Name>
 					<Description><![CDATA[generates Random number from Population]]></Description>
@@ -1027,14 +1071,14 @@ return java.util.concurrent.ThreadLocalRandom.current().nextInt(minInterval,maxI
 if (Patients[0][1]==1)
 {
 	//normally distributed random number between 30 and 90 minutes
-	return java.util.concurrent.ThreadLocalRandom.current().nextGaussian(30,90);
+	return uniform(30,90);
 }
 
 //non-life threatening call
 if (Patients[0][1]==0)
 {
 	//normally distributed random number between 10 and 20 minutes
-	return java.util.concurrent.ThreadLocalRandom.current().nextGaussian(10,20);
+	return uniform(10,20);
 }]]></Body>
 				</Function>
 				<Function AccessType="default" StaticFunction="false">
@@ -1051,7 +1095,7 @@ if (Patients[0][1]==0)
 					<Body><![CDATA[
 
 int hospitalLocation=1;
-int doctorLocation=DoctorLocation;
+int doctorLocation=doctorLocation;
 
 int AvgDrivingTime=matrixDrivingTime[doctorLocation-1][hospitalLocation-1];
 
@@ -1078,11 +1122,11 @@ return java.util.concurrent.ThreadLocalRandom.current().nextDouble(minInterval,m
 int healthState = findHealthState();
 
 if(healthState == 0){
-	notUrgent.inject();
+	notUrgent.inject(Patient);
 	//notUrgentQueue.add(district)
 	}
 if(healthState == 1){
-	urgent.inject();
+	urgent.inject(Patient);
 	}
 	
 ]]></Body>
@@ -1150,6 +1194,18 @@ if(healthState == 1){
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[priority]]></Name>
+							<Value Class="DatabaseQueryCodeValue">
+								<Type>SELECT_UNIQUE_VALUE</Type>
+								<TableReference>
+								</TableReference>
+								<Condition>
+									<ColumnReference>
+									</ColumnReference>
+									<Operator>EQUALS</Operator>
+								</Condition>
+								<ColumnReference>
+								</ColumnReference>
+							</Value>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[comparison]]></Name>
@@ -1314,6 +1370,9 @@ if(healthState == 1){
 									<Parameters>
 										<Parameter>
 											<Name><![CDATA[district]]></Name>
+										</Parameter>
+										<Parameter>
+											<Name><![CDATA[healthState]]></Name>
 										</Parameter>
 									</Parameters>
 									<ReplicationFlag>true</ReplicationFlag>
@@ -1532,6 +1591,9 @@ if(healthState == 1){
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[onExit]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[activePatLoc = di]]></Code>
+							</Value>
 						</Parameter>
 						<Parameter>
 							<Name><![CDATA[onExitTimeout]]></Name>
@@ -1669,6 +1731,9 @@ if(healthState == 1){
 									<Parameters>
 										<Parameter>
 											<Name><![CDATA[district]]></Name>
+										</Parameter>
+										<Parameter>
+											<Name><![CDATA[healthState]]></Name>
 										</Parameter>
 									</Parameters>
 									<ReplicationFlag>true</ReplicationFlag>
@@ -2140,6 +2205,9 @@ if(healthState == 1){
 			<ClientAreaTopLeft><X>0</X><Y>0</Y></ClientAreaTopLeft>
 			<PresentationTopGroupPersistent>true</PresentationTopGroupPersistent>
 			<IconTopGroupPersistent>true</IconTopGroupPersistent>
+			<StartupCode><![CDATA[randomPatientNumber();
+findDistrict();
+findHealthState();]]></StartupCode>
 			<Generic>false</Generic>
 			<GenericParameter>
 				<Id>1484694873455</Id>
@@ -2219,6 +2287,33 @@ if(healthState == 1){
 			</ScaleRuler>
 			<ConnectionsId>1484694873452</ConnectionsId>
 			<Variables>
+				<Variable Class="PlainVariable">
+					<Id>1484816400537</Id>
+					<Name><![CDATA[matrixPopulation]]></Name>
+					<X>110</X><Y>250</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[int[][]]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[new int[][]
+{
+{1,10000},
+{2,45000},
+{3,70000},
+{4,95000},
+{5,110000},
+{6,130000},
+{7,175000},
+{8,215000},
+{9,230000},
+{10,265000}
+}]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
 				<Variable Class="Parameter">
 					<Id>1484700596338</Id>
 					<Name><![CDATA[district]]></Name>
@@ -2244,7 +2339,91 @@ if(healthState == 1){
 						</ParameterEditor>
 					</Properties>                 
 				</Variable>
+				<Variable Class="Parameter">
+					<Id>1484816653568</Id>
+					<Name><![CDATA[healthState]]></Name>
+					<X>140</X><Y>140</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[int]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<NumericType><![CDATA[double]]></NumericType>
+						<SdArray>false</SdArray>
+						<DefaultValue Class="CodeValue">
+							<Code><![CDATA[findHealthState()]]></Code>
+						</DefaultValue>
+						<ParameterEditor>
+							<Id>1484816653566</Id>
+							<EditorContolType>TEXT_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
 			</Variables>
+			<Functions>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[int]]></ReturnType>
+					<Id>1484815493670</Id>
+					<Name><![CDATA[randomPatientNumber]]></Name>
+					<Description><![CDATA[generates Random number from Population]]></Description>
+					<X>311</X><Y>242</Y>
+					<Label><X>15</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[
+return java.util.concurrent.ThreadLocalRandom.current().nextInt(0,265000-1);
+]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[int]]></ReturnType>
+					<Id>1484815493674</Id>
+					<Name><![CDATA[findHealthState]]></Name>
+					<Description><![CDATA[generates State for patient whether is life threatening or not]]></Description>
+					<X>311</X><Y>322</Y>
+					<Label><X>15</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[double rnd=Math.random();
+if(rnd<0.25){
+	return 1; //life threatening
+}
+else
+	return 0; // normal patient]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[int]]></ReturnType>
+					<Id>1484815493676</Id>
+					<Name><![CDATA[findDistrict]]></Name>
+					<X>311</X><Y>282</Y>
+					<Label><X>15</X><Y>-13</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[int patientNum=randomPatientNumber();
+int min=0;
+
+for (int row=0; row <matrixPopulation.length ; row++)
+{
+    	int max=matrixPopulation[row][1];
+        if(min<=patientNum && patientNum<max){
+        	row++; // because java is 0 based, and first district is 1
+        	return row;
+        }
+        min=max;    
+}
+return -1;]]></Body>
+				</Function>
+			</Functions>
 			<AgentLinks>
 				<AgentLink>
 					<Id>1484694873452</Id>
@@ -2382,6 +2561,12 @@ getPresentation().setPresentable( getEngine().getRoot() );]]></ActionCode>
 				</Parameter>
 				<Parameter>
 					<ParameterName><![CDATA[drivingToPat]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[activePatHS]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[activePatLoc]]></ParameterName>
 				</Parameter>
 			</Parameters>			
 			<PresentationProperties 
