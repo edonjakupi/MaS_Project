@@ -679,8 +679,7 @@ test();]]></StartupCode>
 						</RecurrenceCode>
 						<Condition><![CDATA[false]]></Condition>
 					</Properties>
-					<Action><![CDATA[generatePatient();
-]]></Action>
+					<Action><![CDATA[generatePatient();]]></Action>
 				</Event>
 				<Event>
 					<Id>1484566732925</Id>
