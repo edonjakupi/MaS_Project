@@ -4,10 +4,10 @@
 	         AnyLogic Project File 
 *************************************************	         
 -->
-<AnyLogicWorkspace WorkspaceVersion="1.9" AnyLogicVersion="7.3.6.201610041917" AlpVersion="7.3.3">
+<AnyLogicWorkspace WorkspaceVersion="1.9" AnyLogicVersion="7.3.6.201610041855" AlpVersion="7.3.3">
 <Model>
 	<Id>1482308802689</Id>
-	<Name><![CDATA[EmergencyCall_finalVersion]]></Name>
+	<Name><![CDATA[Group14_EmergencyCall_Project]]></Name>
 	<EngineVersion>6</EngineVersion>
 	<JavaPackageName><![CDATA[emergencycall]]></JavaPackageName>
 	<ModelTimeUnit><![CDATA[Second]]></ModelTimeUnit>
